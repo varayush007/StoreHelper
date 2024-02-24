@@ -1,16 +1,17 @@
-from langchain.llms import GooglePalm
-from langchain.utilities import SQLDatabase
-from langchain_experimental.sql import SQLDatabaseChain
-from langchain.prompts import SemanticSimilarityExampleSelector
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import Chroma
-from langchain.prompts import FewShotPromptTemplate
-from langchain.chains.sql_database.prompt import PROMPT_SUFFIX, _mysql_prompt
-from langchain.prompts.prompt import PromptTemplate
-from few_shots import few_shots
 import os
 
 from dotenv import load_dotenv
+from langchain.chains.sql_database.prompt import PROMPT_SUFFIX
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.llms import GooglePalm
+from langchain.prompts import FewShotPromptTemplate
+from langchain.prompts import SemanticSimilarityExampleSelector
+from langchain.prompts.prompt import PromptTemplate
+from langchain.utilities import SQLDatabase
+from langchain.vectorstores import Chroma
+from langchain_experimental.sql import SQLDatabaseChain
+
+from few_shots import few_shots
 
 load_dotenv()
 
@@ -28,17 +29,21 @@ def get_few_shot_db_chain():
     embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
     to_vectorize = [" ".join(example.values()) for example in few_shots]
 
-    vectorstore = Chroma.from_texts(to_vectorize, embedding=embeddings, metadatas=few_shots)
+    vectorstore = Chroma.from_texts(texts=to_vectorize, embedding=embeddings, metadatas=few_shots)
     example_selector = SemanticSimilarityExampleSelector(
         vectorstore=vectorstore,
         k=2,
     )
 
-    mysql_prompt = """You are a MySQL expert. Given an input question, first create a syntactically correct MySQL query to run, then look at the results of the query and return the answer to the input question.
-        Unless the user specifies in the question a specific number of examples to obtain, query for at most {top_k} results using the LIMIT clause as per MySQL. You can order the results to return the most informative data in the database.
-        Never query for all columns from a table. You must query only the columns that are needed to answer the question. Wrap each column name in backticks (`) to denote them as delimited identifiers.
-        Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table.
-        Pay attention to use CURDATE() function to get the current date, if the question involves "today".
+    _mysql_prompt = """You are a MySQL expert. Given an input question, first create a syntactically correct MySQL 
+    query to run, then look at the results of the query and return the answer to the input question. Unless the user 
+    specifies in the question a specific number of examples to obtain, query for at most {top_k} results using the 
+    LIMIT clause as per MySQL. You can order the results to return the most informative data in the database. Never 
+    query for all columns from a table. You must query only the columns that are needed to answer the question. Wrap 
+    each column name in backticks (`) to denote them as delimited identifiers. Pay attention to use only the column 
+    names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention 
+    to which column is in which table. Pay attention to use CURDATE() function to get the current date, 
+    if the question involves "today".
 
         Use the following format:
 
