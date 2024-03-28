@@ -1,4 +1,4 @@
-# **🐱‍🚀STORE HELPER🐱‍🚀**
+# **STORE HELPER**
 
 A Streamlit application that helps store owners answer questions about their inventory easily using natural language. This application leverages LangChain to combine the power of Large Language Models (LLMs) with a MySQL database.
 
