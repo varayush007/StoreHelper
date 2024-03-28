@@ -18,22 +18,12 @@ A Streamlit application that helps store owners answer questions about their inv
     **Bash**
     
         git clone https://github.com/your-username/store-helper
-        
-    
-    **Use code with caution.**
-    
-    **content\_copy**
     
 2.  **Install dependencies:**
     
     **Bash**
     
         pip install -r requirements.txt
-        
-    
-    **Use code with caution.**
-    
-    **content\_copy**
     
 3.  **Set up environment variables:**
     
@@ -54,11 +44,6 @@ A Streamlit application that helps store owners answer questions about their inv
     **Bash**
     
         streamlit run main.py
-        
-    
-    **Use code with caution.**
-    
-    **content\_copy**
     
 
 **Usage**
@@ -88,3 +73,8 @@ A Streamlit application that helps store owners answer questions about their inv
 **Database Schema**
 
 Ensure your MySQL database has a schema similar to the examples and references used in the `few_shots.py` file.
+
+
+**DEMO**
+![Screenshot (92)](https://github.com/varayush007/StoreHelper/assets/108609442/1a38068c-b831-4f94-a1e4-1203d6e9547b)
+
