@@ -24,12 +24,19 @@ def get_few_shot_db_chain():
 
     db = SQLDatabase.from_uri(f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}",
                               sample_rows_in_table_info=3)
-    llm = GooglePalm(google_api_key=os.environ['GOOGLE_API_KEY'], temperature=0.1)
+
+    llm = GooglePalm(google_api_key=os.getenv('GOOGLE_API_KEY'), temperature=0.1)
 
     embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
+
     to_vectorize = [" ".join(example.values()) for example in few_shots]
 
-    vectorstore = Chroma.from_texts(texts=to_vectorize, embedding=embeddings, metadatas=few_shots)
+    vectorstore = Chroma.from_texts(
+        to_vectorize,
+        embedding=embeddings,
+        metadatas=few_shots
+    )
+
     example_selector = SemanticSimilarityExampleSelector(
         vectorstore=vectorstore,
         k=2,
